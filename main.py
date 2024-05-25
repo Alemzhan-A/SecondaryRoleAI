@@ -1,5 +1,4 @@
 import replicate
-from dotenv import load_dotenv
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 import streamlit as st
@@ -11,9 +10,13 @@ import requests
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from deep_translator import GoogleTranslator
-import io
 from fpdf import FPDF
 import tempfile
+from dotenv import load_dotenv
+from gtts import gTTS
+import os
+
+
 
 def main():
     load_dotenv()
@@ -59,6 +62,12 @@ def main():
 
                 for i in parts_of_story:
                     st.write(i)
+                    tts = gTTS(text=i, lang='ru')
+                    tts_fp = tempfile.NamedTemporaryFile(delete=False, suffix='.mp3')
+                    tts.save(tts_fp.name)
+                    audio = open(tts_fp.name, 'rb')
+                    audio_bytes = audio.read()
+                    st.audio(audio_bytes, format='audio/mp3', start_time=0)
                     translated = GoogleTranslator(source='auto', target='english').translate(i)
                     output = replicate.run(
                         "stability-ai/sdxl:39ed52f2a78e934b3ba6e2a89f5b1c712de7dfea535525255b1aa35c5565e08b",
