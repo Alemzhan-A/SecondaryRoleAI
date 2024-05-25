@@ -56,7 +56,6 @@ def main():
                 font_path = 'fonts/DejaVuSans.ttf'
                 pdf.add_font('DejaVu', '', font_path, uni=True)
                 pdf.set_font('DejaVu', '', 12)
-                y_offset = 10
 
                 for i in parts_of_story:
                     st.write(i)
@@ -70,7 +69,7 @@ def main():
 
                     response = requests.get(image_url)
                     if response.status_code == 200:
-                        pdf.add_page()  # Add a new page for each text and image
+                        pdf.add_page()
 
                         content_type = response.headers['Content-Type']
                         suffix = '.jpg' if 'jpeg' in content_type else '.png' if 'png' in content_type else '.tmp'
@@ -81,12 +80,12 @@ def main():
 
                         pdf.set_font('DejaVu', '', 12)
                         pdf.multi_cell(0, 10, i)
-                        pdf.image(tmpfile_path, x=10, y=pdf.get_y() + 10, w=100)
+                        pdf.image(tmpfile_path, x=10, y=pdf.get_y() + 10, w=165)
                     else:
                         st.error("Failed to download the image.")
 
-                pdf_output = pdf.output(dest='S').encode('latin1')  # Generate PDF in memory
-                st.download_button(label="Download your story as PDF", data=pdf_output, file_name="story.pdf",
+                pdf_output = pdf.output(dest='S').encode('latin1')
+                st.download_button(label="Скачайте эту историю в виде PDF", data=pdf_output, file_name="story.pdf",
                                    mime="application/pdf")
 if __name__ == "__main__":
     main()
